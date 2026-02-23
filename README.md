@@ -3,8 +3,8 @@
 An interactive single-page React website for exploring **listed buildings** in the London Borough of **Southwark** and identifying **heritage corridors** (streets with dense clusters of listed buildings). The site integrates an interactive MapLibre map with linked Chart.js visualisations.
 
 ## Live site & repo
-- GitHub Pages: [PASTE_YOUR_GITHUB_PAGES_URL_HERE](https://hanyun-75.github.io/casa0028Assessment1/)
-- GitHub repo: [PASTE_YOUR_GITHUB_REPO_URL_HERE](https://github.com/Hanyun-75/casa0028Assessment1)
+- [GITHUB_PAGES_URL_HERE](https://hanyun-75.github.io/casa0028Assessment1/)
+- [GITHUB_REPO_URL_HERE](https://github.com/Hanyun-75/casa0028Assessment1)
 
 ---
 
