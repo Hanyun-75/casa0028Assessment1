@@ -287,7 +287,7 @@ export default function BuildingStory({ selectedBuilding, streetMetaMap }) {
 
   {wikiStatus === "none" ? (
     <div className="text-xs text-gray-500">
-      No Wikipedia summary found for this name. (Official PDF above is the verified source.)
+      No Wikipedia summary found for this building (404). Official PDF remains the primary source.
     </div>
   ) : null}
 

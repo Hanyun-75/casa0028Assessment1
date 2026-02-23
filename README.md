@@ -33,21 +33,9 @@ Southwark has dense layers of historic built fabric. In this project, streets ar
   - Listing decade distribution (bar)
 - **Building story panel**
   - Always shows verified attributes (Grade / Year / Street + PDF)
-  - Optional external summary (Wikipedia) is user-triggered; the PDF remains the main evidence source.
+  - Optional external summary (Wikipedia) is user-triggered. Some buildings may not have a matching Wikipedia page (404), in which case the interface falls back to the official listing PDF.
 - **Sources box**
   - Quick links to key datasets and references.
-
----
-
-## Data sources
-- **Southwark listed buildings (GeoJSON)**  
-  [London Datastore — Southwark listed buildings](https://data.london.gov.uk/dataset/listed-buildings-in-london-borough-of-southwark-2gq0r/)
-- **London Boroughs boundary (GPKG / GeoJSON)**  
-  [London Datastore — Boroughs](https://data.london.gov.uk/dataset/london-boroughs-e55pw)
-- **Definitions**
-  [Historic England (NHLE) — Definitions](https://historicengland.org.uk/listing/the-list/)
-- **Basemap**
-  [Carto Positron style (MapLibre) — Basemap](https://basemaps.cartocdn.com/gl/positron-gl-style/style.json)
 
 ---
 
@@ -69,6 +57,15 @@ From the repository root:
 npm install
 npm run dev
 ```
+
+---
+
+## Build
+```bash
+npm run build
+npm run preview
+```
+
 ---
 
 ## Data preprocessing
@@ -92,22 +89,14 @@ Note: the .venv/ folder is not committed; the steps above recreate it for reprod
 
 ---
 
-## Build
-```bash
-npm run build
-npm run preview
-```
----
-
 ## References
 ### Data sources
 - [London Datastore — Southwark listed buildings (GeoJSON)](https://data.london.gov.uk/dataset/listed-buildings-in-london-borough-of-southwark-2gq0r/)
 - [London Datastore — London Boroughs boundary (used to extract Southwark boundary)](https://data.london.gov.uk/dataset/london-boroughs-e55pw)
-- [Historic England — National Heritage List for England (NHLE) (definitions of listed buildings and grades)](https://historicengland.org.uk/listing/the-list/)
 
 ### Context (background reading)
 - [Southwark (Wikipedia)](https://en.wikipedia.org/wiki/Southwark)
-
+- [Historic England — National Heritage List for England (NHLE) (definitions of listed buildings and grades)](https://historicengland.org.uk/listing/the-list/)
 ### Basemap
 - [Carto Positron (MapLibre style)](https://basemaps.cartocdn.com/gl/positron-gl-style/style.json)
 
