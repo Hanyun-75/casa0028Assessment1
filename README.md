@@ -4,7 +4,7 @@ An interactive single-page React website for exploring **listed buildings** in t
 
 ## Live site & repo
 - GitHub Pages: PASTE_YOUR_GITHUB_PAGES_URL_HERE
-- GitHub repo: PASTE_YOUR_GITHUB_REPO_URL_HERE
+- GitHub repo: [PASTE_YOUR_GITHUB_REPO_URL_HERE](https://github.com/Hanyun-75/casa0028Assessment1)
 
 ---
 
@@ -33,13 +33,13 @@ Southwark has dense layers of historic built fabric. In this project, streets ar
 
 ## Data sources
 - **Southwark listed buildings (GeoJSON)**  
-  London Datastore: https://data.london.gov.uk/dataset/listed-buildings-in-london-borough-of-southwark-2gq0r/
+  [London Datastore — Southwark listed buildings](https://data.london.gov.uk/dataset/listed-buildings-in-london-borough-of-southwark-2gq0r/)
 - **London Boroughs boundary (GPKG / GeoJSON)**  
-  London Datastore: https://data.london.gov.uk/dataset/london-boroughs-e55pw
+  [London Datastore — Boroughs](https://data.london.gov.uk/dataset/london-boroughs-e55pw)
 - **Definitions**
-  Historic England (NHLE): https://historicengland.org.uk/listing/the-list/
+  [Historic England (NHLE) — Definitions](https://historicengland.org.uk/listing/the-list/)
 - **Basemap**
-  Carto Positron style (MapLibre): https://basemaps.cartocdn.com/gl/positron-gl-style/style.json
+  [Carto Positron style (MapLibre) — Basemap](https://basemaps.cartocdn.com/gl/positron-gl-style/style.json)
 
 ---
 
@@ -89,23 +89,22 @@ npm run preview
 ## References
 
 ### Data sources
-- London Datastore — Southwark listed buildings (GeoJSON): https://data.london.gov.uk/dataset/listed-buildings-in-london-borough-of-southwark-2gq0r/
-- London Datastore — London Boroughs boundary (used to extract Southwark boundary): https://data.london.gov.uk/dataset/london-boroughs-e55pw
-- Historic England — National Heritage List for England (NHLE) (definitions of listed buildings and grades): https://historicengland.org.uk/listing/the-list/
+- [London Datastore — Southwark listed buildings (GeoJSON)](https://data.london.gov.uk/dataset/listed-buildings-in-london-borough-of-southwark-2gq0r/)
+- [London Datastore — London Boroughs boundary (used to extract Southwark boundary)](https://data.london.gov.uk/dataset/london-boroughs-e55pw)
+- [Historic England — National Heritage List for England (NHLE) (definitions of listed buildings and grades)](https://historicengland.org.uk/listing/the-list/)
 
 ### Context (background reading)
-- Southwark (Wikipedia): https://en.wikipedia.org/wiki/Southwark
+- [Southwark (Wikipedia)](https://en.wikipedia.org/wiki/Southwark)
 
 ### Basemap
-- Carto Positron (MapLibre style): https://basemaps.cartocdn.com/gl/positron-gl-style/style.json
+- [Carto Positron (MapLibre style)](https://basemaps.cartocdn.com/gl/positron-gl-style/style.json)
 
 ### Design / colour references
-- ColorHunt palette reference: https://colorhunt.co/palette/758a93ecd5bce9b63bc66e52
-- mycolor.space (palette exploration tool): https://mycolor.space/?hex=%23DFE0DF&sub=1
+- [ColorHunt palette reference](https://colorhunt.co/palette/758a93ecd5bce9b63bc66e52)
+- [mycolor.space (palette exploration tool)](https://mycolor.space/?hex=%23DFE0DF&sub=1)
 
 ### Technical references
-- MapLibre style specification: https://maplibre.org/maplibre-style-spec/
-- React documentation (components): https://react.dev/learn/your-first-component
-
+- [MapLibre style specification](https://maplibre.org/maplibre-style-spec/)
+- [React documentation (components)](https://react.dev/learn/your-first-component)
 ## AI usage
 ChatGPT was used for research support (collecting and summarising web sources related to the historical background of the website topic) and writing support (proofreading and improving the grammar and clarity of the project background text). It was also used for debugging to help diagnose and resolve error messages that could not be fixed independently. In addition, ChatGPT provided workflow guidance for completing file-format conversions within VS Code: conversions previously done in other software (e.g., CSV, GeoJSON, GPKG) were attempted in VS Code for this project, but runtime issues occurred; AI support helped with setting up a Python virtual environment (venv) in VS Code and running the necessary scripts there. All preprocessing outputs and interactive behaviour were verified by testing (including checking outputs in QGIS and in-browser runtime checks).
