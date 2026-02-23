@@ -111,7 +111,7 @@ npm run preview
 ### Basemap
 - [Carto Positron (MapLibre style)](https://basemaps.cartocdn.com/gl/positron-gl-style/style.json)
 
-### Design / colour references
+### Colour references
 - [ColorHunt palette reference](https://colorhunt.co/palette/758a93ecd5bce9b63bc66e52)
 - [mycolor.space (palette exploration tool)](https://mycolor.space/?hex=%23DFE0DF&sub=1)
 
