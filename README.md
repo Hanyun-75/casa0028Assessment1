@@ -15,7 +15,7 @@ Southwark has dense layers of historic built fabric. In this project, streets ar
 
 ---
 
-## Key features (what you can do)
+## Key features
 - **Interactive map (MapLibre)**
   - Building points + popup
   - Southwark boundary overlay
@@ -86,7 +86,7 @@ npm run build
 npm run preview
 ```
 
-## References / Credits
+## References
 
 ### Data sources
 - London Datastore — Southwark listed buildings (GeoJSON): https://data.london.gov.uk/dataset/listed-buildings-in-london-borough-of-southwark-2gq0r/
@@ -108,4 +108,4 @@ npm run preview
 - React documentation (components): https://react.dev/learn/your-first-component
 
 ## AI usage
-ChatGPT was used for research support (collecting and summarising web sources related to the historical background of the website topic) and writing support (proofreading and improving the grammar and clarity of the project background text). It was also used for debugging to help diagnose and resolve error messages that could not be fixed independently. In addition, ChatGPT provided workflow guidance for completing file-format conversions within VS Code: conversions previously done in other software (e.g., CSV, GeoJSON, GPKG) were attempted in VS Code for this project, but runtime issues occurred; AI support helped with setting up a Python virtual environment (venv) in VS Code and running the necessary scripts there.
+ChatGPT was used for research support (collecting and summarising web sources related to the historical background of the website topic) and writing support (proofreading and improving the grammar and clarity of the project background text). It was also used for debugging to help diagnose and resolve error messages that could not be fixed independently. In addition, ChatGPT provided workflow guidance for completing file-format conversions within VS Code: conversions previously done in other software (e.g., CSV, GeoJSON, GPKG) were attempted in VS Code for this project, but runtime issues occurred; AI support helped with setting up a Python virtual environment (venv) in VS Code and running the necessary scripts there. All preprocessing outputs and interactive behaviour were verified by testing (including checking outputs in QGIS and in-browser runtime checks).
