@@ -23,7 +23,7 @@ export default function MapDisplay(props) {
         "#B35656",
         "II",
         "#87B6BC",
-        "#F6F09F",
+        "#F6F09F",//default fallback for unknown
       ],
       // When a street is selected, dim the base layer so the highlight stands out.
       "circle-opacity": selectedStreet ? 0.3 : 0.8,
@@ -89,6 +89,37 @@ export default function MapDisplay(props) {
 
   return (
     <div className="h-full w-full">
+      {/* Legend (Grades) */}
+    <div className="absolute left-4 top-1/2 z-10 -translate-y-1/2 rounded-lg border bg-white/90 p-3 text-xs text-gray-700 shadow backdrop-blur">
+      <div className="mb-2 font-semibold">Listed building grade</div>
+
+      <div className="space-y-2">
+        <div className="flex items-center gap-2">
+          <span
+            className="inline-block h-3 w-3 rounded-sm border"
+            style={{ backgroundColor: "#BED4CB" }}
+          />
+          <span>Grade I</span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span
+            className="inline-block h-3 w-3 rounded-sm border"
+            style={{ backgroundColor: "#B35656" }}
+          />
+          <span>Grade II*</span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span
+            className="inline-block h-3 w-3 rounded-sm border"
+            style={{ backgroundColor: "#87B6BC" }}
+          />
+          <span>Grade II</span>
+        </div>
+      </div>
+    </div>
+
       <Map
         style={{ width: "100%", height: "100%" }}
         initialViewState={{ longitude: -0.09, latitude: 51.5, zoom: 12 }}
