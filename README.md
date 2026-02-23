@@ -15,18 +15,26 @@ Southwark has dense layers of historic built fabric. In this project, streets ar
 
 ---
 
+## Tech stack
+- React + Vite
+- Map: MapLibre via `react-map-gl` + `maplibre-gl`
+- Charts: Chart.js via `react-chartjs-2`
+- Styling: Tailwind CSS
+
+---
+
 ## Key features
-- **Interactive map (MapLibre)**
-  - Building points + popup
+- **Interactive map**
+  - Building points + popup (official PDF link)
   - Southwark boundary overlay
   - Street selection highlight (corridor focus)
-- **Linked charts (Chart.js)**
+- **Linked charts**
   - Grade composition (doughnut)
   - Listing decade distribution (bar)
 - **Building story panel**
   - Always shows verified attributes (Grade / Year / Street + PDF)
   - Optional external summary (Wikipedia) is user-triggered; the PDF remains the main evidence source.
-- **Sources box (UI)**
+- **Sources box**
   - Quick links to key datasets and references.
 
 ---
@@ -43,7 +51,7 @@ Southwark has dense layers of historic built fabric. In this project, streets ar
 
 ---
 
-## How corridor ranking & charts work (basic)
+## How corridor ranking & charts work (short)
 - Group building records by `STREET`.
 - Keep streets with at least **N** buildings (slider).
 - Rank streets by building count (descending).
@@ -61,6 +69,7 @@ From the repository root:
 npm install
 npm run dev
 ```
+---
 
 ## Data preprocessing
 The web map uses **WGS84 (EPSG:4326)**. A Python preprocessing script converts raw data into web-ready GeoJSON.
@@ -80,14 +89,17 @@ deactivate
 - src/data/southwark_boundary_wgs84.json
 
 Note: the .venv/ folder is not committed; the steps above recreate it for reproducibility.
+
+---
+
 ## Build
 ```bash
 npm run build
 npm run preview
 ```
+---
 
 ## References
-
 ### Data sources
 - [London Datastore — Southwark listed buildings (GeoJSON)](https://data.london.gov.uk/dataset/listed-buildings-in-london-borough-of-southwark-2gq0r/)
 - [London Datastore — London Boroughs boundary (used to extract Southwark boundary)](https://data.london.gov.uk/dataset/london-boroughs-e55pw)
@@ -106,5 +118,8 @@ npm run preview
 ### Technical references
 - [MapLibre style specification](https://maplibre.org/maplibre-style-spec/)
 - [React documentation (components)](https://react.dev/learn/your-first-component)
+
+---
+
 ## AI usage
 [ChatGPT5.2](https://chat.openai.com/) was used for research support (collecting and summarising web sources related to the historical background of the website topic) and writing support (proofreading and improving the grammar and clarity of the project background text). It was also used for debugging to help diagnose and resolve error messages that could not be fixed independently. In addition, ChatGPT provided workflow guidance for completing file-format conversions within VS Code: conversions previously done in other software (e.g., CSV, GeoJSON, GPKG) were attempted in VS Code for this project, but runtime issues occurred; AI support helped with setting up a Python virtual environment (venv) in VS Code and running the necessary scripts there. All preprocessing outputs and interactive behaviour were verified by testing (including checking outputs in QGIS and in-browser runtime checks).
