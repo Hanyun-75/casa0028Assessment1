@@ -43,13 +43,13 @@ Southwark has dense layers of historic built fabric. In this project, streets ar
 
 ---
 
-## How corridor ranking & charts work (short)
+## How corridor ranking & charts work (basic)
 - Group building records by `STREET`.
 - Keep streets with at least **N** buildings (slider).
 - Rank streets by building count (descending).
 - For the selected street:
-  - Count `GRADE` → grade composition chart.
-  - Extract listing year → bucket into decades (e.g., 1971 → 1970s) → decade chart.
+  - Count `GRADE` - grade composition chart.
+  - Extract listing year - bucket into decades (e.g., 1971 to 1970s) - decade chart.
 - “Representative” tags (in Building story) are derived from street-level stats (rank, dominant decade, wave strength, etc.).
 
 ---
@@ -80,7 +80,7 @@ deactivate
 - src/data/southwark_boundary_wgs84.json
 
 Note: the .venv/ folder is not committed; the steps above recreate it for reproducibility.
-## Build (production)
+## Build
 ```bash
 npm run build
 npm run preview
@@ -107,4 +107,4 @@ npm run preview
 - [MapLibre style specification](https://maplibre.org/maplibre-style-spec/)
 - [React documentation (components)](https://react.dev/learn/your-first-component)
 ## AI usage
-ChatGPT was used for research support (collecting and summarising web sources related to the historical background of the website topic) and writing support (proofreading and improving the grammar and clarity of the project background text). It was also used for debugging to help diagnose and resolve error messages that could not be fixed independently. In addition, ChatGPT provided workflow guidance for completing file-format conversions within VS Code: conversions previously done in other software (e.g., CSV, GeoJSON, GPKG) were attempted in VS Code for this project, but runtime issues occurred; AI support helped with setting up a Python virtual environment (venv) in VS Code and running the necessary scripts there. All preprocessing outputs and interactive behaviour were verified by testing (including checking outputs in QGIS and in-browser runtime checks).
+[ChatGPT5.2](https://chat.openai.com/) was used for research support (collecting and summarising web sources related to the historical background of the website topic) and writing support (proofreading and improving the grammar and clarity of the project background text). It was also used for debugging to help diagnose and resolve error messages that could not be fixed independently. In addition, ChatGPT provided workflow guidance for completing file-format conversions within VS Code: conversions previously done in other software (e.g., CSV, GeoJSON, GPKG) were attempted in VS Code for this project, but runtime issues occurred; AI support helped with setting up a Python virtual environment (venv) in VS Code and running the necessary scripts there. All preprocessing outputs and interactive behaviour were verified by testing (including checking outputs in QGIS and in-browser runtime checks).
