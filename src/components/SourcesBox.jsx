@@ -1,5 +1,8 @@
 import { useState } from "react";
-
+/**
+ * Small floating panel for data/source attribution.
+ * Fixed positioning keeps it visible while user interacts with the map/sidebar.
+ */
 export default function SourcesBox() {
   const [open, setOpen] = useState(true);
 
@@ -8,6 +11,8 @@ export default function SourcesBox() {
       <div className="rounded-lg border bg-white/90 p-3 text-xs text-gray-700 shadow backdrop-blur">
         <div className="flex items-center justify-between">
           <div className="font-semibold">Sources</div>
+          
+          {/* Toggle reduces visual clutter without removing attribution */}
           <button
             type="button"
             className="text-xs underline text-gray-600"
@@ -18,7 +23,7 @@ export default function SourcesBox() {
           </button>
         </div>
 
-        {open && (
+        {open  ? (
           <ul className="mt-2 list-disc space-y-1 pl-4">
             <li>
               <a
@@ -73,7 +78,7 @@ export default function SourcesBox() {
               </a>
             </li>
           </ul>
-        )}
+        ) : null}
       </div>
     </div>
   );

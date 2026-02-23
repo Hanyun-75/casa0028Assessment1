@@ -11,7 +11,7 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-//colour
+// colour
 const DEFAULT_COLORS = [
   "#87b6bc",
   "#BED4CB",
@@ -22,9 +22,13 @@ const DEFAULT_COLORS = [
   "#E9B63B",
   "#C66E52",
 ];
-
+/**
+ * Bar chart for listing counts grouped by decade.
+ * Input `yearCounts`: 1972: 3, 1975: 9, 1981: 1
+ * Output decades: 1970s, 1980s, ...
+ */
 export default function YearChart({ yearCounts = {}, colors = DEFAULT_COLORS }) {
-  //year, ordering
+  // year, ordering
   const years = Object.keys(yearCounts)
     .map((y) => Number(y))
     .filter((y) => Number.isFinite(y))
@@ -32,32 +36,32 @@ export default function YearChart({ yearCounts = {}, colors = DEFAULT_COLORS }) 
 
   if (!years.length) return <div className="text-xs text-gray-500">No year data</div>;
 
-  const minY = years[0];
-  const maxY = years[years.length - 1];
+    const minY = years[0];
+    const maxY = years[years.length - 1];
 
-  //decade,empty decade
+  // Build a continuous decade axis so "empty decades" still show up as 0.
   const minDecade = Math.floor(minY / 10) * 10;
   const maxDecade = Math.floor(maxY / 10) * 10;
 
   const sortedDecades = [];
   for (let d = minDecade; d <= maxDecade; d += 10) sortedDecades.push(d);
 
-  //first, initialise all decades to 0 (ensuring that empty decades also exist).
+  // Initialise all decades to 0 (ensuring that empty decades also exist).
   const decadeBins = {};
   for (const d of sortedDecades) decadeBins[d] = 0;
 
-  //year+decade
+  // Aggregate each year into its decade bin.
   for (const y of years) {
     const d = Math.floor(y / 10) * 10;
     const count = Number(yearCounts[y] ?? yearCounts[String(y)] ?? 0);
     decadeBins[d] += Number.isFinite(count) ? count : 0;
   }
 
-  //labels & values sortedDecades
+  // Labels & values sortedDecades
   const labels = sortedDecades.map((d) => `${d}s`);
   const values = sortedDecades.map((d) => decadeBins[d] ?? 0);
 
-  //colour
+  // Colour
   const backgroundColor = labels.map((_, i) => colors[i % colors.length]);
 
   const data = {
@@ -87,7 +91,7 @@ export default function YearChart({ yearCounts = {}, colors = DEFAULT_COLORS }) 
     y: {
       beginAtZero: true,
 
-      //line
+      // line
       ticks: {
         font: { size: 12 },
         maxTicksLimit: 8, 

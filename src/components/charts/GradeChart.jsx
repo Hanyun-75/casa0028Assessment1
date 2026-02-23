@@ -3,22 +3,24 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-//colour
+// colour
 const DEFAULT_COLORS = [
   "#87b6bc",
   "#BED4CB",
   "#F6F09F",
-  "#B35656",
- 
+  "#B35656", 
 ];
 
+/**
+ * Doughnut chart for grade composition.
+ */
 export default function GradeChart({ counts = {}, colors = DEFAULT_COLORS }) {
   const labels = Object.keys(counts);
   const values = labels.map((k) => counts[k]);
 
   if (!labels.length) return <div className="text-xs text-gray-500">No data</div>;
 
-  //colour
+  // background colour
   const backgroundColor = labels.map((_, i) => colors[i % colors.length]);
 
   const data = {

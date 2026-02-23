@@ -2,11 +2,14 @@ import { useMemo, useState } from "react";
 
 function cleanText(v) {
   const s = String(v ?? "").trim();
-  return s && s !== "nan" ? s : null;
+  if (!s) return null;
+  if (s.toLowerCase() === "nan") return null;
+  return s;
 }
 
 function simplifyName(name) {
   if (!name) return null;
+  // Cleanup to improve Wikipedia hit rate.
   let s = name.trim();
   s = s.replace(/^Former\s+/i, "");
   s = s.replace(/\s+at\s+.+$/i, "");
@@ -15,9 +18,11 @@ function simplifyName(name) {
 }
 
 function getYear(props) {
+  // Prefer an explicit numeric year if present.
   const yNum = Number(props?.year);
   if (Number.isFinite(yNum) && yNum > 0) return yNum;
 
+  // Fallback: parse first 4 digits from DATE_OF_LISTING.
   const raw = String(props?.DATE_OF_LISTING ?? "").trim();
   const yearStr = raw.slice(0, 4);
   if (!/^\d{4}$/.test(yearStr)) return null;
@@ -68,7 +73,11 @@ async function fetchWikiSummary(query) {
     return { ok: false, status: "network" };
   }
 }
-
+/**
+ * "Verified" info panel:
+ * - Uses fields from the official dataset + computed corridor tags.
+ * - Links out to the official listing PDF (ground-truth source).
+ */
 function OfficialCard({ props, streetMetaMap }) {
   const name = cleanText(props?.NAME) ?? "Unnamed listed building";
   const grade = cleanText(props?.GRADE) ?? "Unknown";
@@ -83,7 +92,7 @@ function OfficialCard({ props, streetMetaMap }) {
     
     tags.push(`Corridor rank: ${meta.rank} — ${meta.count} listed buildings`);
 
-    // dominant decade + wave strength
+    // Dominant decade + wave strength.
     if (meta.dominantDecade) {
       tags.push(`Dominant listing decade: ${meta.dominantDecade}s`);
       const myDecade = year ? Math.floor(year / 10) * 10 : null;
@@ -91,18 +100,19 @@ function OfficialCard({ props, streetMetaMap }) {
         tags.push("Matches dominant decade");
       }
     }
+
     if (meta.dominantDecade && meta.dominantDecadeCount && meta.count) {
       const pct = Math.round((meta.dominantDecadeCount / meta.count) * 100);
       tags.push(`Listing wave strength: ${pct}% in ${meta.dominantDecade}s`);
     }
 
-    // highest grade on this street
+    // Highest grade on this street.
     const myRank = gradeRank(grade);
     if (myRank > 0 && meta.maxGradeRank > 0 && myRank === meta.maxGradeRank) {
       tags.push("Highest grade on this street");
     }
 
-    // earliest/latest listing year on this street
+    // Earliest/latest listing year on this street.
     if (year && meta.minYear && year === meta.minYear) {
       tags.push(`Earliest listed on this street (${year})`);
     }
@@ -117,13 +127,13 @@ function OfficialCard({ props, streetMetaMap }) {
     <div className="text-sm text-gray-700 space-y-2">
       <div className="font-medium">{name}</div>
 
-      {tags.length > 0 && (
+      {tags.length > 0 ? (
         <div className="flex flex-wrap gap-1">
           {tags.map((t) => (
             <Badge key={t}>{t}</Badge>
           ))}
         </div>
-      )}
+      ) : null}
 
       <div className="text-xs text-gray-600 space-y-1">
         <div>
@@ -171,8 +181,9 @@ function OfficialCard({ props, streetMetaMap }) {
 export default function BuildingStory({ selectedBuilding, streetMetaMap }) {
   const props = selectedBuilding?.properties ?? null;
   const rawName = cleanText(props?.NAME);
-  const pdf = getPdfUrl(props);
-
+  //const pdf = getPdfUrl(props);
+  
+  // Try a simplified query first, then fall back to the original name.
   const queries = useMemo(() => {
     if (!rawName) return [];
     const q1 = rawName;
@@ -181,6 +192,7 @@ export default function BuildingStory({ selectedBuilding, streetMetaMap }) {
     return [q1];
   }, [rawName]);
 
+  // Wikipedia panel state
   const [wikiStatus, setWikiStatus] = useState("idle"); // idle | loading | ok | none | error
   const [wikiExtract, setWikiExtract] = useState(null);
   const [wikiUrl, setWikiUrl] = useState(null);
@@ -205,6 +217,7 @@ export default function BuildingStory({ selectedBuilding, streetMetaMap }) {
         return;
       }
 
+      // For non-404 errors, stop early.
       if (result.status && result.status !== 404) {
         setWikiStatus("error");
         return;
@@ -213,6 +226,14 @@ export default function BuildingStory({ selectedBuilding, streetMetaMap }) {
 
     setWikiStatus("none");
   }
+
+  function handleClearWiki() {
+    setWikiStatus("idle");
+    setWikiExtract(null);
+    setWikiUrl(null);
+    setWikiTitle(null);
+  }
+
 
   if (!selectedBuilding) {
     return <div className="text-sm text-gray-500">Click a building to load a story.</div>;
@@ -224,31 +245,31 @@ export default function BuildingStory({ selectedBuilding, streetMetaMap }) {
       <OfficialCard props={props} streetMetaMap={streetMetaMap} />
 
       {/* Optional external summary (button-triggered to avoid noisy 404s) */}
-      {/* Optional external summary (button-triggered to avoid noisy 404s) */}
-<div className="border-t pt-3 space-y-2">
-  <div className="flex items-center justify-between">
-    <div className="text-xs font-medium text-gray-600">External summary </div>
 
-    <div className="flex items-center gap-3">
-      <button
-        className="text-xs underline"
-        onClick={handleFetchWiki}
-        type="button"
-        disabled={wikiStatus === "loading" || !queries.length}
-        title={!queries.length ? "No building name available" : "Fetch Wikipedia summary"}
-      >
-        {wikiStatus === "loading" ? "Loading…" : "Load summary"}
-      </button>
+      <div className="border-t pt-3 space-y-2">
+        <div className="flex items-center justify-between">
+          <div className="text-xs font-medium text-gray-600">External summary </div>
 
-      <button
-        className="text-xs underline text-gray-500"
-        type="button"
-        onClick={() => {
-          setWikiStatus("idle");
-          setWikiExtract(null);
-          setWikiUrl(null);
-          setWikiTitle(null);
-        }}
+          <div className="flex items-center gap-3">
+            <button
+              className="text-xs underline"
+              onClick={handleFetchWiki}
+              type="button"
+              disabled={wikiStatus === "loading" || !queries.length}
+              title={!queries.length ? "No building name available" : "Fetch Wikipedia summary"}
+       >
+              {wikiStatus === "loading" ? "Loading…" : "Load summary"}
+       </button>
+
+       <button
+         className="text-xs underline text-gray-500"
+         type="button"
+         onClick={() => {
+           setWikiStatus("idle");
+           setWikiExtract(null);
+           setWikiUrl(null);
+           setWikiTitle(null);
+         }}
         disabled={wikiStatus === "idle"}
         title="Clear the external summary"
       >
@@ -257,25 +278,28 @@ export default function BuildingStory({ selectedBuilding, streetMetaMap }) {
     </div>
   </div>
 
-  {wikiStatus === "idle" && (
+  {wikiStatus === "idle" ? (
     <div className="text-xs text-gray-500">
       Learn more here. The official listing PDF above is the verified source.
     </div>
-  )}
+  ) : null}
 
-  {wikiStatus === "none" && (
+
+  {wikiStatus === "none" ? (
     <div className="text-xs text-gray-500">
       No Wikipedia summary found for this name. (Official PDF above is the verified source.)
     </div>
-  )}
+  ) : null}
 
-  {wikiStatus === "error" && (
+
+  {wikiStatus === "error" ? (
     <div className="text-xs text-gray-500">
       Wikipedia fetch failed. Please try again later.
     </div>
-  )}
+  ) : null}
 
-  {wikiStatus === "ok" && (
+
+  {wikiStatus === "ok"  ? (
     <div className="space-y-2">
       <div className="text-sm font-medium">{wikiTitle ?? rawName}</div>
       {wikiExtract ? (
@@ -289,7 +313,8 @@ export default function BuildingStory({ selectedBuilding, streetMetaMap }) {
         </a>
       ) : null}
     </div>
-  )}
+  ) : null}
+
 </div>
     </div>
   );

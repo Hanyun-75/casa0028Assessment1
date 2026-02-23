@@ -1,3 +1,6 @@
+/**
+ * Top header for the app: title + short usage instructions.
+ */
 export default function TitleBar() {
   return (
     <header className="w-full border-b bg-white/80 px-4 py-3 backdrop-blur text-center">

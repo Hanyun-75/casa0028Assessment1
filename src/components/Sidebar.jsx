@@ -13,6 +13,7 @@ export default function Sidebar(props) {
     streetMetaMap,
   } = props;
 
+  // If a street is selected, use its aggregated stats for charts; otherwise use overall stats.
   const active = selectedStreetStats ?? null;
   const chartTitle = active ? `Selected street: ${active.street}` : "All buildings";
 
@@ -25,6 +26,7 @@ export default function Sidebar(props) {
         </p>
       </div>
 
+      {/* Street ranking list, limited to top 15 */}
       <div className="px-4 pb-3">
         <div className="text-xs font-medium text-gray-700 mb-2">Top streets</div>
         <div className="space-y-1">
@@ -53,7 +55,8 @@ export default function Sidebar(props) {
           </button>
         )}
       </div>
-
+      
+      {/* 2 Charts */}
       <div className="px-4 py-3 border-t">
         <h3 className="text-sm font-semibold">{chartTitle}</h3>
 
@@ -67,7 +70,7 @@ export default function Sidebar(props) {
           <YearChart yearCounts={(active?.yearCounts ?? overallStats.yearCounts) || {}} />
         </div>
       </div>
-
+      {/* Panel for the clicked building */}
       <div className="px-4 py-3 border-t">
         <h3 className="text-sm font-semibold">Building story</h3>
         <BuildingStory selectedBuilding={selectedBuilding} streetMetaMap={streetMetaMap} />

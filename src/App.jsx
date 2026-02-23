@@ -2,9 +2,15 @@ import { useMemo, useState } from "react";
 import TitleBar from "./components/TitleBar";
 import MapDisplay from "./components/MapDisplay";
 import Sidebar from "./components/Sidebar";
+import SourcesBox from "./components/SourcesBox";
+// Local GeoJSON data
 import southwarkBoundary from "./data/southwark_boundary_wgs84.json";
 import buildingsRaw from "./data/buildings_points_wgs84.json";
-import SourcesBox from "./components/SourcesBox";
+/**
+ * Extract a year from a feature's properties.
+ * - Prefer a numeric `year` field if present.
+ * - Fallback: parse the first 4 digits from `DATE_OF_LISTING` (e.g. "1975-06-01").
+ */
 function getYear(props) {
   const yNum = Number(props?.year);
   if (Number.isFinite(yNum) && yNum > 0) return yNum;
@@ -16,12 +22,21 @@ function getYear(props) {
   const n = Number(yearStr);
   return Number.isFinite(n) && n > 0 ? n : null;
 }
+/**
+ * Convert listing grade to a numeric rank for easy comparison.
+ * Higher = more significant listing grade.
+ */
 export default function App() {
+  // Selected items (MapDisplay + Sidebar).
   const [selectedBuilding, setSelectedBuilding] = useState(null);
   const [selectedStreet, setSelectedStreet] = useState(null);
 
+  // Filter control: only keep streets with at least N buildings.
   const [minStreetCount, setMinStreetCount] = useState(5);
-
+  /**
+   * Ensure Feature.geometry is a valid Point with [lng, lat].
+   * Prevent map's error
+   */
   const features = useMemo(() => {
     return (buildingsRaw?.features ?? []).filter((f) => {
       const c = f?.geometry?.coordinates;
@@ -39,7 +54,13 @@ export default function App() {
     () => ({ type: "FeatureCollection", features }),
     [features]
   );
-
+   
+  /**
+   * Aggregate stats per street:
+   * - total count
+   * - grade distribution
+   * - listing year distribution
+   */
   const streetStats = useMemo(() => {
     const byStreet = new Map();
     for (const f of features) {
@@ -55,8 +76,8 @@ export default function App() {
       s.count += 1;
       s.gradeCounts[grade] = (s.gradeCounts[grade] ?? 0) + 1;
       if (Number.isFinite(year) && year > 0) {
-  s.yearCounts[year] = (s.yearCounts[year] ?? 0) + 1;
-}
+        s.yearCounts[year] = (s.yearCounts[year] ?? 0) + 1;
+  }
     }
     return Array.from(byStreet.values())
       .filter((d) => d.street !== "Unknown")
@@ -77,14 +98,21 @@ const gradeRank = (g) => {
   return 0;
 };
 
-const streetMetaMap = useMemo(() => {
-  const map = {};
+  /**
+   * Extra per-street metadata for the sidebar UI:
+   * - rank (after sorting by count)
+   * - min/max listing year
+   * - highest grade present
+   * - dominant decade (the decade with the most listings)
+   */
+  const streetMetaMap = useMemo(() => {
+    const map = {};
 
-  streetStats.forEach((s, idx) => {
-    const years = Object.keys(s.yearCounts ?? {})
-      .map((y) => Number(y))
-      .filter((y) => Number.isFinite(y))
-      .sort((a, b) => a - b);
+    streetStats.forEach((s, idx) => {
+      const years = Object.keys(s.yearCounts ?? {})
+       .map((y) => Number(y))
+       .filter((y) => Number.isFinite(y))
+       .sort((a, b) => a - b);
 
     const minYear = years.length ? years[0] : null;
     const maxYear = years.length ? years[years.length - 1] : null;
@@ -123,9 +151,14 @@ const streetMetaMap = useMemo(() => {
 
   return map;
 }, [streetStats]);
-  const overallStats = useMemo(() => {
+
+ /**
+   * Overall stats across all features.
+   */  
+ const overallStats = useMemo(() => {
     const gradeCounts = {};
     const yearCounts = {};
+    
     for (const f of features) {
       const p = f.properties ?? {};
       const grade = (p.GRADE ?? "Unknown").trim() || "Unknown";
@@ -135,7 +168,9 @@ const streetMetaMap = useMemo(() => {
     }
     return { gradeCounts, yearCounts };
   }, [features]);
-
+   /**
+   * Convenience lookup for the currently selected street.
+   */
   const selectedStreetStats = useMemo(() => {
     if (!selectedStreet) return null;
     return streetStats.find((d) => d.street === selectedStreet) ?? null;
@@ -147,6 +182,7 @@ const streetMetaMap = useMemo(() => {
 
       {/* key:see map */}
       <div className="flex-1 min-h-0 flex">
+        {/* Main map area */}
         <div className="flex-1 min-w-0 min-h-0">
           <MapDisplay
             geojson={geojson}
@@ -158,6 +194,7 @@ const streetMetaMap = useMemo(() => {
           />
         </div>
 
+        {/* Right sidebar */}
         <div className="w-[380px] max-w-[45vw] min-h-0 border-l overflow-y-auto">
           <Sidebar
             streetStats={streetStats}
@@ -170,6 +207,7 @@ const streetMetaMap = useMemo(() => {
           />
           <SourcesBox />
 
+          {/* adjust the street filtering threshold */}
           <div className="px-4 pb-4">
             <label className="text-xs text-gray-600">Min buildings per street</label>
             <input

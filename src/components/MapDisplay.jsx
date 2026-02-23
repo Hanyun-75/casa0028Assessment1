@@ -25,9 +25,12 @@ export default function MapDisplay(props) {
         "#87B6BC",
         "#F6F09F",
       ],
-      "circle-opacity": selectedStreet ? 0.4 : 0.6,
+      // When a street is selected, dim the base layer so the highlight stands out.
+      "circle-opacity": selectedStreet ? 0.3 : 0.8,
     },
   };
+
+  // Southwark boundary overlay (fill + outline).
   const boundaryFillLayer = {
   id: "southwark-boundary-fill",
   type: "fill",
@@ -37,7 +40,7 @@ export default function MapDisplay(props) {
   },
 };
 
-const boundaryLineLayer = {
+  const boundaryLineLayer = {
   id: "southwark-boundary-line",
   type: "line",
   paint: {
@@ -46,16 +49,8 @@ const boundaryLineLayer = {
     "line-opacity": 0.6,
   },
 };
-  //const boundaryLayer = {
-  //id: "southwark-boundary-line",
-  //type: "line",
-  //paint: {
-   // "line-color": "#758A93",
-   // "line-width": 3,
-   // "line-opacity": 0.6,
-  //},
-//};
-
+  
+// Highlight layer for buildings on the selected street.
    const highlightLayer = {
     id: "buildings-highlight",
     type: "circle",
@@ -68,22 +63,29 @@ const boundaryLineLayer = {
       "circle-opacity": 0.6,
     },
   };
-
+  // Extract the PDF link from the dataset field.
   const getPdfUrl = (p) => {
     const url = String(p?.LISTING_DESCRIPTION ?? "").trim();
     return url.startsWith("http") ? url : null;
   };
 
   const handleMapClick = (event) => {
+    // `event.features` is populated ONLY for layers listed in `interactiveLayerIds`.
     const features = event.features;
+
     if (features && features.length) {
       const clicked = features[0];
+
+      // Store the clicked feature so <Popup> can display it.
       setSelectedBuilding(clicked);
 
+      // Store the street name to drive the highlight layer & sidebar charts.
       const street = (clicked?.properties?.STREET ?? "").trim();
       setSelectedStreet(street || null);
     }
   };
+   
+
 
   return (
     <div className="h-full w-full">
@@ -91,29 +93,26 @@ const boundaryLineLayer = {
         style={{ width: "100%", height: "100%" }}
         initialViewState={{ longitude: -0.09, latitude: 51.5, zoom: 12 }}
         mapStyle={MAP_STYLE}
-        
-        interactiveLayerIds={["buildings-layer"]}
+         // Include both layers so clicks work even when highlight circles sit on top.
+        interactiveLayerIds={["buildings-layer", "buildings-highlight"]}
         onClick={handleMapClick}
       >
-        {boundaryGeojson && (
-  <Source id="southwark-boundary-src" type="geojson" data={boundaryGeojson}>
-    <Layer {...boundaryFillLayer} />
-    <Layer {...boundaryLineLayer} />
-  </Source>
-)}
+        {boundaryGeojson ? (
+          <Source id="southwark-boundary-src" type="geojson" data={boundaryGeojson}>
+            <Layer {...boundaryFillLayer} />
+            <Layer {...boundaryLineLayer} />
+          </Source>
+        ) : null}
 
-        {boundaryGeojson && (
-  <Source id="southwark-boundary-src" type="geojson" data={boundaryGeojson}>
-    <Layer {...boundaryFillLayer} />
-    <Layer {...boundaryLineLayer} />
-  </Source>
-)}
+      
+        {/* Listed buildings points (with optional street highlight) */}
         <Source id="buildings-src" type="geojson" data={geojson}>
           <Layer {...buildingsLayer} />
           {selectedStreet ? <Layer {...highlightLayer} /> : null}
         </Source>
 
-        {selectedBuilding && (
+        {/* Popup for the single selected building */}
+        {selectedBuilding ? (
           <Popup
             anchor="bottom"
             longitude={selectedBuilding.geometry.coordinates[0]}
@@ -122,28 +121,28 @@ const boundaryLineLayer = {
             onClose={() => setSelectedBuilding(null)}
           >
             <div className="max-w-[240px]">
-  <div className="font-semibold text-sm leading-snug whitespace-normal break-words">
-    {selectedBuilding.properties?.NAME ?? "Unnamed listed building"}
-  </div>
+              <div className="font-semibold text-sm leading-snug whitespace-normal break-words">
+                {selectedBuilding.properties?.NAME ?? "Unnamed listed building"}
+              </div>
 
-  <div className="mt-2">
-    {getPdfUrl(selectedBuilding.properties) ? (
-      <a
-        className="underline text-sm"
-        href={getPdfUrl(selectedBuilding.properties)}
-        target="_blank"
-        rel="noreferrer"
-      >
-        Open official listing PDF
-      </a>
-    ) : (
-      <span className="text-gray-500 text-sm">No PDF link available</span>
-    )}
-  </div>
-</div>
-          </Popup>
+              <div className="mt-2">
+                {getPdfUrl(selectedBuilding.properties) ? (
+                  <a
+                    className="underline text-sm"
+                    href={getPdfUrl(selectedBuilding.properties)}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                   Open official listing PDF
+                  </a>
+                ) : (
+                 <span className="text-gray-500 text-sm">No PDF link available</span>
+                )}
+              </div>
+            </div>
+           </Popup>
           
-        )}
+          ) : null}
       </Map>
     </div>
   );

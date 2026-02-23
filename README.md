@@ -1,70 +1,90 @@
-# React + Vite
+# Southwark Listed Buildings Explorer (CASA0028 Assessment 1)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An interactive single-page React website for exploring **listed buildings** in the London Borough of **Southwark** and identifying **heritage corridors** (streets with dense clusters of listed buildings). The site integrates an interactive MapLibre map with linked Chart.js visualisations.
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
-
-Note: This will impact Vite dev & build performances.
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-
-
-
-# Southwark Listed Buildings Explorer (Heritage Corridors)
-
-An interactive single-page React website for exploring **listed buildings** in the London Borough of **Southwark** and identifying **heritage corridors** (streets with dense clusters of listed buildings).
-
-## Live site
-- GitHub Pages: **YOUR_GITHUB_PAGES_URL**
-- GitHub repository: **YOUR_REPO_URL**
+## Live site & repo
+- GitHub Pages: PASTE_YOUR_GITHUB_PAGES_URL_HERE
+- GitHub repo: PASTE_YOUR_GITHUB_REPO_URL_HERE
 
 ---
 
-## What this website does
-
-### Concept
-A *heritage corridor* is defined here as a street with a high concentration of listed buildings. The website ranks streets by the **number of listed buildings** and helps users explore:
-- corridor-level patterns (grade composition, listing decade distribution)
-- building-level details (official listing PDF evidence)
-
-### Key interactions
-- **Map (react-map-gl + MapLibre)**
-  - Points represent listed buildings
-  - Click a point to open a popup and the **official listing PDF**
-  - Select a street corridor to highlight buildings on that street
-  - Southwark boundary is shown for geographic context
-- **Sidebar (analysis)**
-  - **Top streets** list (corridor ranking)
-  - Charts for overall vs selected corridor:
-    - **Grade composition** (doughnut)
-    - **Listing decade distribution** (bar)
-  - Building “story” panel:
-    - Always shows verified attributes (Grade / Year / Street) + official PDF link
-    - Optional external summary (Wikipedia) is user-triggered to avoid noisy failed requests
+## Project idea (heritage corridors)
+Southwark has dense layers of historic built fabric. In this project, streets are ranked as **heritage corridors** by the **number of listed buildings** on each street.  
+- Select a street to explore corridor-level patterns (grade and listing decade).  
+- Click a building to open the verified **official listing PDF**.
 
 ---
 
-## Tech stack
-- React (Vite)
-- MapLibre via `react-map-gl/maplibre`
-- Chart.js via `react-chartjs-2`
-- Tailwind CSS for layout and UI styling
+## Key features (what you can do)
+- **Interactive map (MapLibre)**
+  - Building points + popup
+  - Southwark boundary overlay
+  - Street selection highlight (corridor focus)
+- **Linked charts (Chart.js)**
+  - Grade composition (doughnut)
+  - Listing decade distribution (bar)
+- **Building story panel**
+  - Always shows verified attributes (Grade / Year / Street + PDF)
+  - Optional external summary (Wikipedia) is user-triggered; the PDF remains the main evidence source.
+- **Sources box (UI)**
+  - Quick links to key datasets and references.
 
 ---
 
-## Project structure
+## Data sources
+- **Southwark listed buildings (GeoJSON)**  
+  London Datastore: https://data.london.gov.uk/dataset/listed-buildings-in-london-borough-of-southwark-2gq0r/
+- **London Boroughs boundary (GPKG / GeoJSON)**  
+  London Datastore: https://data.london.gov.uk/dataset/london-boroughs-e55pw
+- **Definitions**
+  Historic England (NHLE): https://historicengland.org.uk/listing/the-list/
+- **Basemap**
+  Carto Positron style (MapLibre): https://basemaps.cartocdn.com/gl/positron-gl-style/style.json
 
+---
 
+## How corridor ranking & charts work (short)
+- Group building records by `STREET`.
+- Keep streets with at least **N** buildings (slider).
+- Rank streets by building count (descending).
+- For the selected street:
+  - Count `GRADE` → grade composition chart.
+  - Extract listing year → bucket into decades (e.g., 1971 → 1970s) → decade chart.
+- “Representative” tags (in Building story) are derived from street-level stats (rank, dominant decade, wave strength, etc.).
 
+---
+
+## Run locally (React + Vite)
+From the repository root:
+
+```bash
+npm install
+npm run dev
+```
+
+## Data preprocessing
+The web map uses **WGS84 (EPSG:4326)**. A Python preprocessing script converts raw data into web-ready GeoJSON.
+### Inputs (place in data/raw/)
+- All Southwark listed buildings.geojson
+- London_Boroughs.gpkg
+### Steps
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install geopandas pyogrio
+python scripts/preprocess.py
+deactivate
+```
+### Outputs (generated into src/data/)
+- src/data/buildings_points_wgs84.json
+- src/data/southwark_boundary_wgs84.json
+
+Note: the .venv/ folder is not committed; the steps above recreate it for reproducibility.
+## Build (production)
+```bash
+npm run build
+npm run preview
+```
 
 ## References / Credits
 
@@ -86,3 +106,6 @@ A *heritage corridor* is defined here as a street with a high concentration of l
 ### Technical references
 - MapLibre style specification: https://maplibre.org/maplibre-style-spec/
 - React documentation (components): https://react.dev/learn/your-first-component
+
+## AI usage
+ChatGPT was used for research support (collecting and summarising web sources related to the historical background of the website topic) and writing support (proofreading and improving the grammar and clarity of the project background text). It was also used for debugging to help diagnose and resolve error messages that could not be fixed independently. In addition, ChatGPT provided workflow guidance for completing file-format conversions within VS Code: conversions previously done in other software (e.g., CSV, GeoJSON, GPKG) were attempted in VS Code for this project, but runtime issues occurred; AI support helped with setting up a Python virtual environment (venv) in VS Code and running the necessary scripts there.
